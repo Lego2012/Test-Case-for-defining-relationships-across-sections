@@ -1,0 +1,78 @@
+{{ define "main" }}
+<div class="mw8 center pa4">
+<h1>
+  Test Case for defining relationships across sections
+</h1>
+
+<h2>
+  Define sections
+</h2>
+
+{{ $section1 :=  where .Site.RegularPages "Section" "section-one" }}
+Section 1: `where .Site.RegularPages "Section" "section-one"` output: {{ $section1 }}<br />
+
+{{ $section2 :=  where .Site.RegularPages "Section" "section-two" }}
+Section 2: `where .Site.RegularPages "Section" "section-two"` output: {{ $section2 }}
+
+
+<hr />
+
+
+<h2>
+  Range through Section One and find Section 2 documents which have a title referenced in the foo param (this works as expected)
+</h2>
+<p>
+  expect "Section one Test One" to show that it references "Section Two Test One" in the foo parameter.
+</p>
+
+{{ range $section1 }}
+
+  <h3>
+    {{ .Title }}
+  </h3>
+  <p>.Params.foo :
+    {{ with .Params.foo }}
+      {{ . }}
+    {{ end }}
+  </p>
+
+  {{ $related_items := where ($section2) ".Title" "in" .Params.foo }}
+
+  `$related_items := where ($section2) ".Title" "in" .Params.foo` <br />
+  output: {{ $related_items }} {{ range $related_items }}{{ .Title }}{{ end }}
+
+{{ end }}
+
+<hr />
+
+<h2>
+  Range through Section Two and find Section One documents with the foo parameter that includes this document's title
+</h2>
+<p>
+  expect "Section Two Test One" to show that it is referenced in "Section one Test One's" foo parameter
+</p>
+
+{{ range $section2 }}
+
+  <h3>{{ .Title }}</h3>
+
+  <p>.Params.foo :
+    {{ with .Params.foo }}
+      {{ . }}
+    {{ end }}
+  </p>
+
+  {{ $related_items := where ($section1) ".Params.foo" "intersect" (slice .Title) }}
+
+  `$related_items := where ($section1) ".Params.foo" "intersect" (slice .Title)` <br />
+  output: {{ $related_items }} {{ range $related_items }}{{ .Title }}{{ end }}
+
+
+{{ end }}
+
+
+
+</div>
+
+
+{{ end }}

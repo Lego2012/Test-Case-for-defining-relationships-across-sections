@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html  lang="{{ $.Site.LanguageCode | default "en" }}" class="no-js">
+  <head>
+    <title>{{ .Site.Title }} {{ with .Title }} | {{ . }}{{ end }}</title>
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.7.0/css/tachyons.min.css"/>
+
+  </head>
+  <body>
+    {{ block "header" . }}{{ end }}
+    <div class="content">
+      <main role="main">
+        {{ block "main" . }}{{ end }}
+      </main>
+    </div>
+
+  </body>
+</html>
